@@ -1,67 +1,52 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const authModel = require("../models/authModel");
-const userModel = require("../models/users");
 require("dotenv").config();
 
 const login = async (req, res) => {
-  const { username, password } = req.body;
+    const { username, password } = req.body;
 
-  try {
-    const [rows] = await authModel.login(username);
+    try {
+        // Cek di tabel mahasiswa
+        const [mahasiswaRows] = await authModel.loginMahasiswa(username);
+        if (mahasiswaRows.length > 0) {
+            const mahasiswa = mahasiswaRows[0];
+            const match = await bcrypt.compare(password, mahasiswa.password);
+            if (match) {
+                const token = jwt.sign({ id: mahasiswa.id, role: 'mahasiswa' }, process.env.JWT_SECRET, { expiresIn: '2h' });
+                return res.status(200).json({
+                    message: 'Login successful',
+                    user: mahasiswa,
+                    token
+                });
+            }
+        }
 
-    if (rows.length > 0) {
-      const user = rows[0];
-      const match = await bcrypt.compare(password, user.password);
+        // Cek di tabel admin
+        const [adminRows] = await authModel.loginAdmin(username);
+        if (adminRows.length > 0) {
+            const admin = adminRows[0];
+            const match = await bcrypt.compare(password, admin.password);
+            if (match) {
+                const token = jwt.sign({ id: admin.id, role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '2h' });
+                return res.status(200).json({
+                    message: 'Login successful',
+                    user: admin,
+                    token
+                });
+            }
+        }
 
-      if (match) {
-        const token = jwt.sign(user, process.env.JWT_SECRET, {
-          expiresIn: "2h",
-        });
-        res.status(200).json({
-          message: "Login successful",
-          data
-          // data: rows,
-          // token,
-        });
-      } else {
+        // Jika tidak ditemukan di kedua tabel atau password salah
         return res.status(400).json({
-          massage: "Password salah",
-          succes: false,
+            message: 'Username or password is incorrect'
         });
-      }
-    } else {
-      return res.status(400).json({
-        massage: "username salah",
-        succes: false,
-      });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
-const registerUser = async (req, res) => {
-  const { nim, username, password, role } = req.body;
-
-  try {
-    
-    const [existingUser] = await userModel.userStatus(nim);
-    if (existingUser.length > 0) {
-        return res.status(400).json({
-            message: 'NIM sudah terdaftar',
-            success: false,
-        });
-    }
-
-    await authModel.register(nim, username, password, role);
-    res.status(200).json({ message: "User registered successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
 };
 
 module.exports = {
   login,
-  registerUser,
 };
