@@ -6,12 +6,14 @@ const app = express();
 const usersRoute = require('./routes/mahasiswa');
 const authRoute = require('./routes/auth')
 const adminRoute = require('./routes/admin')
+const pengajuanRoute = require('./routes/pengajuanKTM');
 
 app.use(cors());
 app.use(express.json());
 app.use('/mahasiswa', usersRoute);
 app.use('/auth', authRoute);
 app.use('/admin', adminRoute);
+app.use('/pengajuanKTM', pengajuanRoute);
 
 app.listen(PORT, () => {
   console.log(`Example app listening at http://localhost:${PORT}`);
