@@ -19,6 +19,7 @@ const getAllMahasiswa = async (req, res) => {
 
 const createMahasiswa = async (req, res) => {
   const { username , password, nama, nim, jurusan, angkatan } = req.body;
+  const role = "mahasiswa"
 
   try {
     
@@ -30,7 +31,7 @@ const createMahasiswa = async (req, res) => {
         });
     }
 
-    await authModel.registerMahasiswa(username , password, nama, nim, jurusan, angkatan);
+    await authModel.registerMahasiswa(username , password, nama, nim, jurusan, angkatan, role);
     res.status(200).json({ 
       message: "User registered successfully", 
     });

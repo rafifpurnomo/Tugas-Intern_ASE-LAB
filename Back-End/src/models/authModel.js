@@ -11,18 +11,18 @@ const loginAdmin = (username) => {
     return connection.execute(SQLQuery, [username]);
 };
 
-const registerMahasiswa = async (username ,plainPassword, nama, nim, jurusan, angkatan) => {
+const registerMahasiswa = async (username ,plainPassword, nama, nim, jurusan, angkatan, role) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
-    const SQLQuery = "INSERT INTO mahasiswa (username , password, nama, nim, jurusan, angkatan) VALUES (?, ?, ?, ?, ?, ?)";
-    return connection.execute(SQLQuery, [username, hashedPassword, nama, nim, jurusan, angkatan]);
+    const SQLQuery = "INSERT INTO mahasiswa (username , password, nama, nim, jurusan, angkatan, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    return connection.execute(SQLQuery, [username, hashedPassword, nama, nim, jurusan, angkatan, role]);
 }
 
-const registerAdmin = async (username ,plainPassword, nama, nip) => {
+const registerAdmin = async (username ,plainPassword, nama, nip, role) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
-    const SQLQuery = "INSERT INTO admin (username , password, nama, nip) VALUES (?, ?, ?, ?)";
-    return connection.execute(SQLQuery, [username, hashedPassword, nama, nip]);
+    const SQLQuery = "INSERT INTO admin (username , password, nama, nip, role) VALUES (?, ?, ?, ?, ?)";
+    return connection.execute(SQLQuery, [username, hashedPassword, nama, nip, role]);
 }
 
 module.exports = {

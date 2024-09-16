@@ -19,6 +19,7 @@ const getAllAdmin = async (req, res) => {
 
 const createAdmin = async (req, res) => {
   const { username, password, nama, nip } = req.body;
+  const role = "admin";
 
   try {
     const [existingUser] = await adminModel.checkAdmin(nip);
@@ -29,7 +30,7 @@ const createAdmin = async (req, res) => {
       });
     }
 
-    await authModel.registerAdmin(username, password, nama, nip);
+    await authModel.registerAdmin(username, password, nama, nip, role);
     res.status(200).json({ message: "User registered successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
