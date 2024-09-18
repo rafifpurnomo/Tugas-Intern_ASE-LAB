@@ -1,4 +1,6 @@
 const pengajuanModel = require("../models/pengajuanKTM");
+const config = require("../config/firebase");
+const firebaseStorage = require("firebase/storage")
 
 // Controller untuk mengambil semua pengajuan KTM
 const getAllPengajuan = async (req, res) => {
@@ -16,6 +18,17 @@ const getAllPengajuan = async (req, res) => {
   }
 };
 
+const uploadImage = async (file) => {
+  const storage = firebaseStorage.getStorage(config.app)
+  const imageRef = firebaseStorage.ref(storage,"gabut2.pdf")
+  await firebaseStorage.uploadBytes(imageRef, file).then((snapshot) => {
+      console.log("upload foto selesai");
+      return snapshot.ref
+  }).catch((error) => {
+    return error
+  })
+}
+
 // Controller untuk menambahkan pengajuan KTM baru
 const createPengajuan = async (req, res) => {
   const { id_akun, note, status } = req.body;
@@ -27,14 +40,20 @@ const createPengajuan = async (req, res) => {
   }
 
   try {
+
+    const fileUrl = uploadImage(file);
+    
     await pengajuanModel.addPengajuan(
       id_akun,
-      file.filename,
+      fileUrl,
       note,
       tanggal_pengajuan,
       status || "di proses"
     );
+    console.log("file url pdf:", fileUrl)
     res.status(201).json({ message: "Pengajuan berhasil ditambahkan." });
+
+
   } catch (error) {
     res.status(500).json({
       message: "Error saat menambahkan pengajuan",
