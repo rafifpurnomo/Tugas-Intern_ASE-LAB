@@ -1,6 +1,9 @@
 const pengajuanModel = require("../models/pengajuanKTM");
-const config = require("../config/firebase");
-const firebaseStorage = require("firebase/storage")
+const { getStorage, ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const firebaseConfig = require('../config/firebase.config')
+const path = require("path");
+const crypto = require("crypto");
+
 
 // Controller untuk mengambil semua pengajuan KTM
 const getAllPengajuan = async (req, res) => {
@@ -18,18 +21,7 @@ const getAllPengajuan = async (req, res) => {
   }
 };
 
-const uploadImage = async (file) => {
-  const storage = firebaseStorage.getStorage(config.app)
-  const imageRef = firebaseStorage.ref(storage,"gabut2.pdf")
-  await firebaseStorage.uploadBytes(imageRef, file).then((snapshot) => {
-      console.log("upload foto selesai");
-      return snapshot.ref
-  }).catch((error) => {
-    return error
-  })
-}
 
-// Controller untuk menambahkan pengajuan KTM baru
 const createPengajuan = async (req, res) => {
   const { id_akun, note, status } = req.body;
   const file = req.file;
@@ -40,24 +32,33 @@ const createPengajuan = async (req, res) => {
   }
 
   try {
+    const randomString = crypto.randomBytes(16).toString("hex");
+    const fileExtension = path.extname(file.originalname); 
+    const randomFileName = `${randomString}${fileExtension}`; 
+    const { firebaseStorage } = await firebaseConfig();
+    const storageRef = ref(firebaseStorage, `${randomFileName}`); 
+    const fileBuffer = file.buffer; 
+    const snapshot = await uploadBytes(storageRef, fileBuffer, {
+      contentType: file.mimetype, 
+    });
+    const downloadURL = await getDownloadURL(snapshot.ref);
 
-    const fileUrl = uploadImage(file);
-    
     await pengajuanModel.addPengajuan(
       id_akun,
-      fileUrl,
+      downloadURL,
       note,
       tanggal_pengajuan,
       status || "di proses"
     );
-    console.log("file url pdf:", fileUrl)
-    res.status(201).json({ message: "Pengajuan berhasil ditambahkan." });
 
-
+    res.status(201).json({ 
+      message: "Pengajuan berhasil ditambahkan.",
+      file: file.originalname 
+    });
   } catch (error) {
     res.status(500).json({
       message: "Error saat menambahkan pengajuan",
-      serverMessage: error,
+      serverMessage: error.message,
     });
   }
 };
@@ -67,11 +68,6 @@ const updateStatusPengajuan = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   const tanggal_pembaruan = new Date();
-
-  // console.log("Request ID:", id);
-  // console.log("Request Status:", status);
-  // console.log("Tanggal Pembaruan:", tanggal_pembaruan);
-
   try {
     await pengajuanModel.updatePengajuanStatus(id, tanggal_pembaruan, status);
     res.status(200).json({ message: "Status pengajuan berhasil diperbarui." });
@@ -95,16 +91,6 @@ const getPengajuanByIDAKUN = async (req, res) => {
         success: false,
       });
     }
-    // // Ambil data buffer dari file PDF yang disimpan di database
-    // const pdfBuffer = dataPengajuanKTM[0].file; // Kolom 'file' harus berupa buffer PDF
-
-    // // Set header untuk mengembalikan file PDF
-    // res.setHeader('Content-Type', 'application/pdf');
-    // res.setHeader('Content-Disposition', `attachment; filename=${dataPengajuanKTM[0].filename}`);
-
-    // // Kirim buffer PDF sebagai respons
-    // res.end(pdfBuffer); // Gunakan res.end untuk buffer
-
     res.status(200).json({
       message: `Pengajuan KTM dengan ID AKUN ${idAkun} berhasil diambil`,
       success: true,
