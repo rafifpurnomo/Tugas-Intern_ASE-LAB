@@ -1,0 +1,86 @@
+.footer {
+    margin-top: 10rem;
+    background-color: #1b1a1a;
+    height: 498px;
+    width: 100%;
+    padding-top: 3rem;
+}
+
+.footer-content {
+    margin-left: 20rem;
+    text-align: left;
+}
+
+.footer-text {
+    color: white;
+    font-size: 24px;
+    text-align: left;
+    white-space: pre-line;
+}
+
+.alamat, .kontak {
+    color: white;
+    font-weight: 700;
+    font-size: 32px;
+    text-align: left;
+    margin-top: 3rem;
+}
+
+@media screen and (max-width: 1400px) {
+    .footer-content {
+        margin-left: 10rem;
+    }
+
+    .footer-text, .alamat, .kontak {
+        font-size: 20px;
+    }
+
+    .alamat, .kontak {
+        margin-top: 2rem;
+    }
+}
+
+@media screen and (max-width: 1150px) {
+    .footer-content {
+        margin-left: 3rem;
+        margin-right: 3rem;
+    }
+
+    .footer-text, .alamat, .kontak {
+        font-size: 20px;
+    }
+
+    .alamat, .kontak {
+        margin-top: 2rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .footer-content {
+        margin-left: 2rem;
+        margin-right: 2rem;
+    }
+
+    .footer-text, .alamat, .kontak {
+        font-size: 18px;
+    }
+
+    .alamat, .kontak {
+        margin-top: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .footer-content {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+
+    .footer-text, .alamat, .kontak {
+        font-size: 16px;
+    }
+
+    .alamat, .kontak {
+        margin-top: 1rem;
+    }
+}
