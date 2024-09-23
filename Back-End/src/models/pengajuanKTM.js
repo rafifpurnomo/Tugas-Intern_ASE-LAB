@@ -7,12 +7,12 @@ const getAllPengajuanKTM = () => {
 }
 
 // Fungsi untuk menambahkan pengajuan KTM
-const addPengajuan = (id_akun, filename, note, tanggal_pengajuan, status) => {
+const addPengajuan = (id_akun, filepath, note, tanggal_pengajuan, status) => {
     const SQLQuery = `
-        INSERT INTO pengajuan_ktm (id_akun, filename, note, tanggal_pengajuan, status)
+        INSERT INTO pengajuan_ktm (id_akun, filepath, note, tanggal_pengajuan, status)
         VALUES (?, ?, ?, ?, ?)
     `;
-    return connection.execute(SQLQuery, [id_akun, filename, note, tanggal_pengajuan, status]);
+    return connection.execute(SQLQuery, [id_akun, filepath, note, tanggal_pengajuan, status]);
 }
 
 // Fungsi untuk memperbarui status pengajuan KTM

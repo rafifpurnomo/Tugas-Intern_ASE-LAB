@@ -43,9 +43,4 @@ const initializeFirebase = async () => {
     }
   };
   
-  // Example usage
-  initializeFirebase().then(({ app, analytics, firebaseStorage }) => {
-    console.log("Firebase initialized successfully:", { app, analytics, firebaseStorage });
-  });
-  
   module.exports = initializeFirebase;
