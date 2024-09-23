@@ -9,30 +9,42 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault(); 
 
+        // Log the payload you're sending to the server
+        console.log('Payload:', JSON.stringify({ username, password }));
+
         try {
-            const response = await fetch('http://localhost:5000/api/login', {
+            const response = await fetch('http://localhost:5000/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ username, password }), // Send the username and password in the request body
             });
 
-            const data = await response.json();
+            // Log the full response status and body for debugging
+            console.log('Response Status:', response.status);
 
+            const data = await response.json();
+            console.log('Response Data:', data);
+
+            // Check if the request was successful
             if (!response.ok) {
-                setError(data.message);
+                setError(data.message || 'Something went wrong. Please try again.');
                 return;
             }
 
+            // Store the token in localStorage
             localStorage.setItem('token', data.token);
-            
+
+            // Redirect based on the user's role
             if (data.user.role === 'admin') {
-                window.location.href = '/AHome'; // Adjust the path as needed
+                window.location.href = '/AHome'; 
             } else {
-                window.location.href = '/home'; // Adjust the path as needed
+                window.location.href = '/home'; 
             }
         } catch (err) {
+            // Log the error in case of a network failure or other issue
+            console.error('Error:', err);
             setError('Server error. Please try again later.');
         }
     };
@@ -81,6 +93,6 @@ const Login = () => {
             </div>
         </>
     );
-}
+};
 
 export default Login;
