@@ -1,0 +1,118 @@
+.title-info {
+  font-size: 25px;
+  margin-top: 4rem;
+  text-align: center;
+}
+
+.wrapper-verifikasi {
+  display: flex;
+  flex-direction: column; 
+  background: #f70909;
+  margin: 5rem auto; 
+  height: min(551px, 80%);
+  width: min(1478px, 80%);
+  border-radius: 20px;
+  box-shadow: 0px 5px 6.27px rgba(0, 0, 0, 0.34);
+  overflow: hidden; 
+  box-sizing: border-box; 
+}
+
+.top-verif {
+  background-color: #af2929;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  padding: 15px 20px;
+  box-shadow: 0px 5px 6.27px rgba(0, 0, 0, 0.34);
+  width: 100%; 
+  box-sizing: border-box;
+}
+
+.bottom-verif {
+  background-color: white;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  padding: 2rem; 
+  width: 100%; 
+  box-sizing: border-box;
+  display: flex; 
+  gap: 20px; 
+}
+
+.bottom-left-verif {
+  flex: 1; 
+}
+
+.bottom-right-verif {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.button {
+  position: relative;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0px 5px 6.27px rgba(0, 0, 0, 0.34);
+}
+
+.tidaksetuju-button {
+  background-color: #ffffff;
+  color: black;
+}
+
+.setuju-button {
+  background-color: #af2929;
+  color: white;
+}
+
+.submit {
+  background-color: #af2929;
+  color: white;
+  margin-top: 1rem;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px; 
+}
+
+.button-text {
+  display: inline-block;
+  transition: opacity 0.3s ease;
+}
+
+.bot-submit {
+  padding-left: 8rem;
+}
+
+.bottom-left-verif {
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; /* Stack content vertically */
+  gap: 20px;
+  position: relative; /* For positioning the iframe container */
+}
+
+.pdf-container {
+  width: 100%; /* Full width of the container */
+  height: 0; /* Initial height */
+  padding-bottom: 75%; /* Maintain aspect ratio (4:3 or 16:9) */
+  position: relative; /* For absolute positioning of the iframe */
+}
+
+.pdf-container iframe {
+  position: absolute; /* Position it relative to the container */
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width of the container */
+  height: 100%; /* Full height of the container */
+  border: none; /* Remove border */
+}
+
+
+

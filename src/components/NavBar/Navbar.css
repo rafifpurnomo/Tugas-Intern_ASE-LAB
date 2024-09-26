@@ -1,0 +1,122 @@
+.header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* optional, for a shadow effect */
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #d21313;
+  z-index: 1000;
+  height: var(--header-height);
+  margin: 0;
+}
+
+.nav__logo {
+  display: flex;
+  align-items: center;
+  margin-left: 30px;
+}
+
+.nav__toggle,
+.nav__close {
+  font-size: 1.5rem;
+  color: var(--title-color);
+  cursor: pointer;
+}
+
+.nav__cta {
+  color: var(--title-color);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+}
+
+.nav__cta-content {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+}
+
+.nav__list {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 2.5rem;
+  margin-right: 30px;
+}
+
+.nav__link {
+  color: var(--title-color);
+  font-weight: var(--font-semi-bold);
+  transition: color 0.4s;
+  margin-right: 30px;
+}
+
+.nav__link:hover {
+  color: var(--title-color);
+  font-weight: 700;
+}
+
+.nav__close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+}
+
+.nav__name-container {
+  display: flex;
+  align-items: center; /* Center align items vertically */
+  gap: 0.5rem; /* Space between name and icon */
+}
+
+.nav__item {
+  display: flex; /* Ensure items are in a flexbox */
+  align-items: center; /* Center align vertically */
+}
+
+
+@media screen and (max-width: 1150px) {
+  .nav__menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    background-color: hsla(0, 0%, 6%, 0.2);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    width: 80%;
+    height: 100%;
+    padding: 6rem 3rem 0;
+    transition: right 0.4s;
+  }
+  .show-menu {
+    right: 0;
+  }
+}
+
+@media screen and (min-width: 1150px) {
+  .nav {
+    height: calc(var(--header-height) + 1rem);
+  }
+  .nav__toggle,
+  .nav__close {
+    display: none;
+  }
+  .nav__list {
+    flex-direction: row;
+    column-gap: 2.5rem;
+  }
+}
