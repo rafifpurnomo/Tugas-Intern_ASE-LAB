@@ -1,9 +1,13 @@
 const pengajuanModel = require("../models/pengajuanKTM");
-const { getStorage, ref, uploadBytes, getDownloadURL } = require("firebase/storage");
-const firebaseConfig = require('../config/firebase.config')
+const {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} = require("firebase/storage");
+const firebaseConfig = require("../config/firebase.config");
 const path = require("path");
 const crypto = require("crypto");
-
 
 // Controller untuk mengambil semua pengajuan KTM
 const getAllPengajuan = async (req, res) => {
@@ -21,9 +25,10 @@ const getAllPengajuan = async (req, res) => {
   }
 };
 
-
 const createPengajuan = async (req, res) => {
-  const { id_akun, note, status } = req.body;
+  const { note } = req.body;
+  const id_users = req.id;
+  const status = "diproses";
   const file = req.file;
   const tanggal_pengajuan = new Date();
 
@@ -32,28 +37,19 @@ const createPengajuan = async (req, res) => {
   }
 
   try {
-    const randomString = crypto.randomBytes(16).toString("hex");
-    const fileExtension = path.extname(file.originalname); 
-    const randomFileName = `${randomString}${fileExtension}`; 
-    const { firebaseStorage } = await firebaseConfig();
-    const storageRef = ref(firebaseStorage, `${randomFileName}`); 
-    const fileBuffer = file.buffer; 
-    const snapshot = await uploadBytes(storageRef, fileBuffer, {
-      contentType: file.mimetype, 
-    });
-    const downloadURL = await getDownloadURL(snapshot.ref);
+    const downloadURL = await uploadKTMImg(file);
 
     await pengajuanModel.addPengajuan(
-      id_akun,
+      id_users,
       downloadURL,
       note,
       tanggal_pengajuan,
-      status || "di proses"
+      status
     );
 
-    res.status(201).json({ 
+    res.status(201).json({
       message: "Pengajuan berhasil ditambahkan.",
-      file: file.originalname 
+      file: file.originalname,
     });
   } catch (error) {
     res.status(500).json({
@@ -63,18 +59,60 @@ const createPengajuan = async (req, res) => {
   }
 };
 
+const uploadKTMImg = async (KTMImg) => {
+  try {
+    if (!KTMImg) {
+      throw new Error("File tidak valid");
+    }
+
+    const KTMImgExtension = path.extname(KTMImg.originalname);
+    const KTMImgOriginalName = path.basename(
+      KTMImg.originalname,
+      KTMImgExtension
+    );
+    const newKTMImgName = `${Date.now()}_${KTMImgOriginalName}${KTMImgExtension}`;
+
+    const { firebaseStorage } = await firebaseConfig();
+    const storageRef = ref(firebaseStorage, `pengajuanKTM/${newKTMImgName}`);
+
+    const KTMImgBuffer = KTMImg.buffer;
+
+    const resultKTMImg = await uploadBytes(storageRef, KTMImgBuffer, {
+      contentType: KTMImg.mimetype,
+    });
+
+    return await getDownloadURL(resultKTMImg.ref);
+  } catch (error) {
+    console.error("Error saat foto KTM:", error.message);
+    throw new Error("Gagal mengunggah foto KTM.");
+  }
+};
+
 // Controller untuk memperbarui status pengajuan
 const updateStatusPengajuan = async (req, res) => {
   const { id } = req.params;
+  const role = req.role;
   const { status } = req.body;
   const tanggal_pembaruan = new Date();
+
   try {
-    await pengajuanModel.updatePengajuanStatus(id, tanggal_pembaruan, status);
-    res.status(200).json({ message: "Status pengajuan berhasil diperbarui." });
+    if (role === "admin") {
+      await pengajuanModel.updatePengajuanStatus(id, tanggal_pembaruan, status);
+      res
+        .status(200)
+        .json({ message: "Status pengajuan berhasil diperbarui." });
+    } else {
+      res
+        .status(403)
+        .json({
+          message:
+            "Akses ditolak. Hanya admin yang dapat memperbarui status pengajuan.",
+        });
+    }
   } catch (error) {
     res.status(500).json({
       message: "Error saat memperbarui status pengajuan",
-      serverMessage: error,
+      serverMessage: error.message || error,
     });
   }
 };
@@ -96,13 +134,12 @@ const getPengajuanByIDAKUN = async (req, res) => {
       success: true,
       data: dataPengajuanKTM,
     });
-    
   } catch (error) {
     res.status(500).json({
-        message: 'Server error',
-        success: false,
-        error: error.message,
-      });
+      message: "Server error",
+      success: false,
+      error: error.message,
+    });
   }
 };
 
@@ -111,5 +148,4 @@ module.exports = {
   createPengajuan,
   updateStatusPengajuan,
   getPengajuanByIDAKUN,
-  
 };
