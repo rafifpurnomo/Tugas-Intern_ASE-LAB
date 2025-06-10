@@ -117,20 +117,20 @@ const updateStatusPengajuan = async (req, res) => {
   }
 };
 
-const getPengajuanByIDAKUN = async (req, res) => {
-  const { idAkun } = req.params;
+const getPengajuanByIDUSER = async (req, res) => {
+  const { id_users } = req.params;
 
   try {
-    const dataPengajuanKTM = await pengajuanModel.getPengajuanByIDAKUN(idAkun);
+    const [dataPengajuanKTM] = await pengajuanModel.getPengajuanByid_user(id_users);
 
     if (dataPengajuanKTM.length === 0) {
       return res.status(404).json({
-        message: `Pengajuan KTM untuk ID AKUN ${idAkun} tidak ditemukan`,
+        message: `Pengajuan KTM untuk ID AKUN ${id_users} tidak ditemukan`,
         success: false,
       });
     }
     res.status(200).json({
-      message: `Pengajuan KTM dengan ID AKUN ${idAkun} berhasil diambil`,
+      message: `Pengajuan KTM dengan ID AKUN ${id_users} berhasil diambil`,
       success: true,
       data: dataPengajuanKTM,
     });
@@ -147,5 +147,5 @@ module.exports = {
   getAllPengajuan,
   createPengajuan,
   updateStatusPengajuan,
-  getPengajuanByIDAKUN,
+  getPengajuanByIDUSER,
 };

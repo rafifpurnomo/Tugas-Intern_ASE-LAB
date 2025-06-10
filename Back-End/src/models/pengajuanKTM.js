@@ -27,14 +27,14 @@ const updatePengajuanStatus = (id, tanggal_pembaruan, status) => {
     return connection.execute(SQLQuery, [status, tanggal_pembaruan, id]);
 }
 
-const getPengajuanByIDAKUN = (idAkun) => {
-    const SQLQuery = `SELECT * FROM pengajuan_ktm WHERE id_akun = ?`;
-    return connection.execute(SQLQuery, [idAkun]);
+const getPengajuanByid_user = (id_users) => {
+    const SQLQuery = `SELECT * FROM pengajuan_ktm WHERE id_users = ?`;
+    return connection.execute(SQLQuery, [id_users]);
 }
 
 module.exports = {
     getAllPengajuanKTM,
     addPengajuan,
     updatePengajuanStatus,
-    getPengajuanByIDAKUN,
+    getPengajuanByid_user,
 }

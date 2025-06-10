@@ -17,8 +17,8 @@ router.put(
   pengajuanKTMController.updateStatusPengajuan
 );
 router.get(
-  "/getAllPengajuanByIDAKUN/:idAkun",
-  pengajuanKTMController.getPengajuanByIDAKUN
+  "/getAllPengajuanByIDAKUN/:id_users",
+  pengajuanKTMController.getPengajuanByIDUSER
 );
 
 module.exports = router;
